@@ -10,7 +10,7 @@ from pybloom import ScalableBloomFilter
 
 __version__ = '0.02'
 
-def parse_args():
+def parse_args(raw_args=None):
     parser = argparse.ArgumentParser(
         description='Compare email address lists using Bloom filter')
     parser.add_argument('-v', '--version',
@@ -36,7 +36,7 @@ def parse_args():
                       type=argparse.FileType('r'),
                       default=sys.stdin,
                       help='Input file(s) with one email address per line')
-    args = parser.parse_args()
+    args = parser.parse_args(raw_args)
     if not args.output and not args.input:
         parser.error("Please specify --input or --output bloom filter file")
     return args
