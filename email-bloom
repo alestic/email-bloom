@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+#
+# https://github.com/alestic/email-bloom
+#
+
+from __future__ import print_function
+import argparse
+import sys
+from pybloom import ScalableBloomFilter
+
+__version__ = '0.01'
+
+def get_args():
+    parser = argparse.ArgumentParser(
+        description='Compare email address lists using scrypt hashes')
+    parser.add_argument('-v', '--version',
+                        action='version',
+                        version='%(prog)s ' + __version__)
+    bloom_file_group = parser.add_mutually_exclusive_group()
+    bloom_file_group.add_argument('--output-bloom',
+                        dest='output',
+                        type=argparse.FileType('w'),
+                        help="File to write Bloom Filter")
+    bloom_file_group.add_argument('--input-bloom',
+                        dest='input',
+                        type=argparse.FileType('r'),
+                        help="File containing other party's Bloom Filter")
+    parser.add_argument('--max-false-positive-rate',
+                        dest='rate',
+                        type=float,
+                        default=0.01,
+                        help='Max false positive rate (Default 0.01 = 1%)')
+    parser.add_argument('files',
+                        metavar='FILENAME',
+                        nargs='*',
+                        type=argparse.FileType('r'),
+                        default=sys.stdin,
+                        help='Input file(s) with one email address per line')
+    args = parser.parse_args()
+    if not args.output and not args.input:
+        parser.error("Please specify --input or --output bloom filter file")
+    return args
+
+def canonicalize_email(email_address):
+    return email_address.strip().lower()
+
+def write_bloom_filter(output_bloom_filter_file, false_positive_rate, files):
+    bloom = ScalableBloomFilter(mode=ScalableBloomFilter.SMALL_SET_GROWTH,
+                                error_rate=false_positive_rate)
+    for file in args.files:
+        for line in file:
+            email_address = canonicalize_email(line)
+            bloom.add(email_address)
+    bloom.tofile(output_bloom_filter_file)
+            
+def print_matches(input_bloom_filter_file, files):
+    bloom = ScalableBloomFilter.fromfile(input_bloom_filter_file)
+    for file in args.files:
+        for line in file:
+            email_address = canonicalize_email(line)
+            if email_address in bloom:
+                print(email_address)
+
+args = get_args()
+if args.output:
+    write_bloom_filter(args.output, args.rate, args.files)
+else:
+    print_matches(args.input, args.files)
