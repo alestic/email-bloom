@@ -8,7 +8,7 @@ import argparse
 import sys
 from pybloom import ScalableBloomFilter
 
-__version__ = '0.01'
+__version__ = '0.02'
 
 def get_args():
     parser = argparse.ArgumentParser(
@@ -49,17 +49,15 @@ def write_bloom_filter(output_bloom_filter_file, false_positive_rate, files):
                                 error_rate=false_positive_rate)
     for file in args.files:
         for line in file:
-            email_address = canonicalize_email(line)
-            bloom.add(email_address)
+            bloom.add(canonicalize_email(line))
     bloom.tofile(output_bloom_filter_file)
             
 def print_matches(input_bloom_filter_file, files):
     bloom = ScalableBloomFilter.fromfile(input_bloom_filter_file)
     for file in args.files:
         for line in file:
-            email_address = canonicalize_email(line)
-            if email_address in bloom:
-                print(email_address)
+            if canonicalize_email(line) in bloom:
+                print(line, end="")
 
 args = get_args()
 if args.output:
