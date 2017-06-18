@@ -23,8 +23,8 @@ and write to BLOOMFILE
 any matching email addresses from input files
 
 `--max-false-positive-rate RATE` - The desired max false positive rate
-when generating an output Bloom filter file. Not used with
-`--input-bloom`
+when generating an output Bloom filter file, between 0 and 1. Not used with
+`--input-bloom`. (Default: 0.01 = 1%)
 
 ## ARGUMENTS
 
@@ -53,7 +53,7 @@ definitely not in a set.
 
 For more information on Bloom filters, please read:
 
-  <https://en.wikipedia.org/wiki/Bloom_filter>
+> <https://en.wikipedia.org/wiki/Bloom_filter>
 
 Party A creates a Bloom filter using the email addresses in their
 list, specifying the false positive rate they would like Party B to
@@ -142,11 +142,11 @@ addresses.
 
 ## MAINTAINER
 
-Eric Hammond <ehammond@thinksome.com>
+Eric Hammond `<ehammond@thinksome.com>`
 
 ## LICENSE
 
-Copyright 2013 Eric Hammond <ehammond@thinksome.com>
+Copyright 2017 Eric Hammond `<ehammond@thinksome.com>`
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
