@@ -10,7 +10,7 @@ from pybloom import ScalableBloomFilter
 
 __version__ = '0.02'
 
-def get_args():
+def parse_args():
     parser = argparse.ArgumentParser(
         description='Compare email address lists using scrypt hashes')
     parser.add_argument('-v', '--version',
@@ -59,8 +59,12 @@ def print_matches(input_bloom_filter_file, files):
             if canonicalize_email(line) in bloom:
                 print(line, end="")
 
-args = get_args()
-if args.output:
-    write_bloom_filter(args.output, args.rate, args.files)
-else:
-    print_matches(args.input, args.files)
+def main(args):
+    if args.output:
+        write_bloom_filter(args.output, args.rate, args.files)
+    else:
+        print_matches(args.input, args.files)
+
+if __name__ == '__main__':
+    args = parse_args()
+    main(args)
