@@ -16,6 +16,9 @@ between two parties
 
 `-v|--version` - Show program version and exit
 
+One and only one of `--output-bloom` or `--input-bloom` must be
+specified:
+
 `--output-bloom BLOOMFILE` - Generate Bloom filter from input files
 and write to BLOOMFILE
 
