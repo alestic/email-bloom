@@ -47,14 +47,14 @@ def canonicalize_email(email_address):
 def write_bloom(output_bloom, false_positive_rate, files):
     bloom = ScalableBloomFilter(mode=ScalableBloomFilter.SMALL_SET_GROWTH,
                                 error_rate=false_positive_rate)
-    for file in args.files:
+    for file in files:
         for line in file:
             bloom.add(canonicalize_email(line))
     bloom.tofile(output_bloom)
             
 def print_matches(input_bloom, files):
     bloom = ScalableBloomFilter.fromfile(input_bloom)
-    for file in args.files:
+    for file in files:
         for line in file:
             if canonicalize_email(line) in bloom:
                 print(line, end="")
