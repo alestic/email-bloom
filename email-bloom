@@ -13,29 +13,34 @@ __version__ = '0.02'
 def parse_args(raw_args=None):
     parser = argparse.ArgumentParser(
         description='Compare email address lists using Bloom filter')
-    parser.add_argument('-v', '--version',
-                      action='version',
-                      version='%(prog)s ' + __version__)
+    parser.add_argument(
+        '-v', '--version',
+        action='version',
+        version='%(prog)s ' + __version__)
     bloom_group = parser.add_mutually_exclusive_group()
-    bloom_group.add_argument('--output-bloom',
-                      dest='output',
-                      type=argparse.FileType('w'),
-                      help="Target file to write Bloom filter (destructive)")
-    bloom_group.add_argument('--input-bloom',
-                      dest='input',
-                      type=argparse.FileType('r'),
-                      help="File containing source Bloom filter")
-    parser.add_argument('--max-false-positive-rate',
-                      dest='rate',
-                      type=float,
-                      default=0.01,
-                      help='Max false positive rate (Default 0.01 = 1 percent)')
-    parser.add_argument('files',
-                      metavar='FILENAME',
-                      nargs='*',
-                      type=argparse.FileType('r'),
-                      default=sys.stdin,
-                      help='Input file(s) with one email address per line')
+    bloom_group.add_argument(
+        '--output-bloom',
+        dest='output',
+        type=argparse.FileType('w'),
+        help="Target file to write Bloom filter (destructive)")
+    bloom_group.add_argument(
+        '--input-bloom',
+        dest='input',
+        type=argparse.FileType('r'),
+        help="File containing source Bloom filter")
+    parser.add_argument(
+        '--max-false-positive-rate',
+        dest='rate',
+        type=float,
+        default=0.01,
+        help='Max false positive rate (Default 0.01 = 1 percent)')
+    parser.add_argument(
+        'files',
+        metavar='FILENAME',
+        nargs='*',
+        type=argparse.FileType('r'),
+        default=sys.stdin,
+        help='Input file(s) with one email address per line')
     args = parser.parse_args(raw_args)
     if not args.output and not args.input:
         parser.error("Please specify --input or --output bloom filter file")
@@ -45,8 +50,9 @@ def canonicalize_email(email_address):
     return email_address.strip().lower()
 
 def write_bloom(output_bloom, false_positive_rate, files):
-    bloom = ScalableBloomFilter(mode=ScalableBloomFilter.SMALL_SET_GROWTH,
-                                error_rate=false_positive_rate)
+    bloom = ScalableBloomFilter(
+        mode=ScalableBloomFilter.SMALL_SET_GROWTH,
+        error_rate=false_positive_rate)
     for file in files:
         for line in file:
             bloom.add(canonicalize_email(line))
