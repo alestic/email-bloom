@@ -10,6 +10,7 @@ from pybloom import ScalableBloomFilter
 
 __version__ = '0.02'
 
+
 def parse_args(raw_args=None):
     parser = argparse.ArgumentParser(
         description='Compare email address lists using Bloom filter')
@@ -46,8 +47,10 @@ def parse_args(raw_args=None):
         parser.error("Please specify --input or --output bloom filter file")
     return args
 
+
 def canonicalize_email(email_address):
     return email_address.strip().lower()
+
 
 def write_bloom(output_bloom, false_positive_rate, files):
     bloom = ScalableBloomFilter(
@@ -57,7 +60,8 @@ def write_bloom(output_bloom, false_positive_rate, files):
         for line in email_file:
             bloom.add(canonicalize_email(line))
     bloom.tofile(output_bloom)
-            
+
+    
 def print_matches(input_bloom, files):
     bloom = ScalableBloomFilter.fromfile(input_bloom)
     for email_file in files:
@@ -65,11 +69,13 @@ def print_matches(input_bloom, files):
             if canonicalize_email(line) in bloom:
                 print(line, end="")
 
+
 def main(args):
     if args.output:
         write_bloom(args.output, args.rate, args.files)
     else:
         print_matches(args.input, args.files)
+
 
 if __name__ == '__main__':
     args = parse_args()
