@@ -53,15 +53,15 @@ def write_bloom(output_bloom, false_positive_rate, files):
     bloom = ScalableBloomFilter(
         mode=ScalableBloomFilter.SMALL_SET_GROWTH,
         error_rate=false_positive_rate)
-    for file in files:
-        for line in file:
+    for email_file in files:
+        for line in email_file:
             bloom.add(canonicalize_email(line))
     bloom.tofile(output_bloom)
             
 def print_matches(input_bloom, files):
     bloom = ScalableBloomFilter.fromfile(input_bloom)
-    for file in files:
-        for line in file:
+    for email_file in files:
+        for line in email_file:
             if canonicalize_email(line) in bloom:
                 print(line, end="")
 
